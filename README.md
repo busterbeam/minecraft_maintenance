@@ -1,5 +1,7 @@
-# Minecraft Maintenance
+# Minecraft Maintenance 
 This will manage updating, backups, archiving and prompting your server.
+
+[AGPL License](LICENSE)
 
 ## Updating
 Updating at the present time only utalizes papermc, as this was built for a papermc server.  I do plan to add other server software support, but don't intend to test each.  It has access to a restore function and temporary backuping so if an update doesn't work it will promptly revert the server.  It will also start and stop the server for you when needed, even if the server wasn't running in the first place
