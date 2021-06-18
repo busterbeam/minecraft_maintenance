@@ -33,7 +33,7 @@ This system utalizes an ini file for user prefernces, this is found in `minecraf
 Usage would simply be `python3 minecraft_maintanence` which could be placed inside crontab (linux) `@reboot python3 path_to_server/minecraft_maintanence`.  But you also want to add how often you want the script to run as minecraft_maintanence stops once it's finished updating, backing up etc... so your config.ini might state backup every hour but if it runs once a day it won't do anything so you must schedule it to run once an hour at least and it will maintain the rest.  partially setup like this because if you want to restore you would do `python3 minecraft_maintanence latest`.  Also to ensure low power/performance requirements
 
 ## Discord Bot
-Minecraft Servers usually have discord servers, maybe make the maintenance software perpetually alive and if players request for update_checks, world_restore and anything else through the relevant discord channel then the it will happen
+Minecraft Servers usually have discord servers, maybe make the maintenance software perpetually alive and if players request for update_checks, world_restore and anything else through the relevant discord channel then the it will happen.  Too make this happen I will need to change how the server is initiated, probably use `subprocess.Popen()`.  This will also be helpful to allow other server operators, to add more functionality from inside the game, as I might be able to add download requests to plugins, datapacks, resourece packs etc...
 
 
 
