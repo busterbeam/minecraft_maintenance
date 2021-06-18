@@ -9,15 +9,6 @@ from datetime import datetime
 from requests import get
 from time import sleep, time, time_ns, localtime
 from prompt import command, playsound, BossBar, title
-from configparser import ConfigParser
-
-def setup():
-	config = ConfigParser()
-	config.read("minecraft_maintenance.ini")
-	return config
-
-QU = '\"'
-
 
 def download(version, build, name):
 	""" """
@@ -26,7 +17,7 @@ def download(version, build, name):
 		if not response.ok:
 			return False
 		kwargs = {
-			"name": "Downloading Update {version} {build}"
+			"name": "Downloading Update {version} {build}",
 			"total": response.headers["Content-Length"]
 		}
 		with BossBar(**kwargs) as bb:
@@ -52,12 +43,12 @@ class Main:
 		if not "mc-server" in run(["screen", "-list"], capture_output = True):
 			self.start()
 		self.backup()
-	
+
 	def find_jar(self):
 		for filename in listdir():
 			if filename.endswith(".jar"):
 				return filename
-	
+
 	def timer(self, seconds):
 		start = time_ns()
 		end = start + (seconds * 10**6)
@@ -67,16 +58,16 @@ class Main:
 					playsound("block.note_block.iron_xylophone")
 					print(" 5 Seconds Remaining!!")
 				bb.set(start - time_ns())
-	
+
 	def start(self):
 		system(
-			f"screen -dmS mc-server java -Xms1G -Xmx4G -d64 -jar {self.name} -nogui"
+			f"screen -dmS {s_name} java {jar_cnf} -jar {b_name} {mc_cnf}"
 		)
-	
+
 	def stop(self):
 		title("Server Stopping Now!")
 		command("stop")
-	
+
 	def update(self, server_path, backup_path):
 		update = self.check_update()
 		if update:
@@ -89,7 +80,7 @@ class Main:
 			download(version, build, download_name)
 			self.timer(60)
 			self.stop()
-	
+
 	def backup(self, server_path, backup_path):
 		hour = localtime().tm_hour
 		wday = localtime().tm_wday
@@ -106,14 +97,14 @@ class Main:
 		else: # hourly overides itself
 			file["new"] = "{backup_path}/hourly_{strftime('%H')}/"
 			backup(file) # hourly
-	
+
 	def server_hash(self):
 		sha256_hash = sha256()
 		with open(self.name, 'rb') as server_file:
 			for byte_block in iter(lambda: server_file.read(4096), b''):
 				sha256_hash.update(byte_block)
 		return sha256_hash.hexdigest()
-	
+
 	def check_update(self):
 		print("Checking for updates")
 		version = (get(url()).json())["versions"][-1]
@@ -134,7 +125,7 @@ class Main:
 		else:
 			print("No new update found")
 			return False
-	
+
 	def url(self, *args):
 		server_api = self.server_api
 		if len(args) < 1:
@@ -151,5 +142,5 @@ class Main:
 if __name__ == "__main__":
 	if argv[1] == "restore":
 		Main("restore")
-	
+
 	settings = setup()

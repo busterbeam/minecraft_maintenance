@@ -11,13 +11,15 @@ def command(cmd):
 
 def title(message, **kwargs):
 	kwargs["text"] = message
-	return command(f"title @a title {sub("'", '"', str(kwargs))}"")
+	kwargs = sub("'", '"', str(kwargs))
+	return command(f"title @a title {kwargs}")
 
 def print(message):
 	QU = '\"'
 	if isinstance(message, (dict, list)):
+		message = sub("'", '"', str(message))
 		return command(
-			f"title @a actionbar {sub("'", '"', str(message))}"
+			f"title @a actionbar {message}"
 		)
 	else:
 		return command(
@@ -37,23 +39,23 @@ class BossBar(Process):
 		self.colour = kwargs.get("color", "white")
 		self.current = 0
 		self.bar_set = True
-	
+
 	def __add__(self, num):
 		if not self.bar_set:
 			raise Exception("Bar not set")
 		self.current += num
-	
+
 	def set(self, value):
 		if not self.bar_set:
 			raise Exception("Bar not set")
 		self.current = value
-	
+
 	def run(self):
 		""" The loop to keep the bossbar updated """
 		while self.bar_set:
 			sleep(1/3)
 			command(f"bossbar set {self.name} value {self.current}")
-	
+
 	def __enter__(self):
 		""" start boss bar """
 		command(f"bossbar add {self.name} {QU}{title}{QU}")
@@ -61,12 +63,11 @@ class BossBar(Process):
 		command(f"bossbar set {self.name} players @a")
 		self.start()
 		return self
-		
+
 	def update(self, value):
 		self.__add__(value)
-	
+
 	def __exit__(self):
 		""" close boss bar """
 		self.bar_set = False
 		command(f"bossbar remove {self.name}")
-
